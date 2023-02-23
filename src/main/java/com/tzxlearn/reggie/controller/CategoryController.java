@@ -81,7 +81,7 @@ public class CategoryController {
     public R<String> delete(Long ids) {
 
         categoryService.remove(ids);
-        return R.success("删除成功");
+        return R.success("删除成功了");
     }
 
     @PutMapping
