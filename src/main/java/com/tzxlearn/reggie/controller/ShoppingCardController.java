@@ -123,7 +123,7 @@ public class ShoppingCardController {
         LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ShoppingCart::getUserId, currentId);
         shoppingCartService.remove(queryWrapper);
-        return R.success("成功");
+        return R.success("成功清空购物车");
     }
 
 
