@@ -15,6 +15,9 @@ import com.tzxlearn.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +40,8 @@ public class SetMealController {
     private SetmealDishService setmealDishService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private CacheManager cacheManager;
 
     /**
      * 新增套餐
@@ -45,6 +50,7 @@ public class SetMealController {
      * @return
      */
     @PostMapping
+    @CacheEvict(value = "setmeal",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto) {
 
         setmealService.saveWithDish(setmealDto);
@@ -97,6 +103,7 @@ public class SetMealController {
      * @return
      */
     @DeleteMapping
+    @CacheEvict(value = "setmeal",allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids) {
         log.info("ids:{}", ids);
 
@@ -110,6 +117,7 @@ public class SetMealController {
      */
     @PostMapping("/status/{status}")
     @Transactional
+    @CacheEvict(value = "setmeal",allEntries = true)
     public R<String> updateStatus(@PathVariable("status") Integer status, @RequestParam List<Long> ids) {
 
         LambdaUpdateWrapper<Setmeal> updateWrapper = new LambdaUpdateWrapper<>();
@@ -124,6 +132,7 @@ public class SetMealController {
      * 在客户端点击左侧套餐分类，在右侧显示套餐
      */
     @GetMapping("/list")
+    @Cacheable(value = "setmeal", key = "#categoryId+'_'+#status")
     public R<List<Setmeal>> setmealList(Long categoryId, Integer status) {
         //条件
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
