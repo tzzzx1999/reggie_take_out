@@ -38,7 +38,11 @@ public class LoginCheck implements Filter {
                 "/backend/**",
                 "/front/**",
                 "/user/senMsg",
-                "/user/login"
+                "/user/login",
+                "/doc.html",
+                "/webjars/**",
+                "/swagger-resources",
+                "/v2/api-docs"
         };
         //判断本次请求是否需要处理
         boolean checkResult = check(urls, requestURI);
