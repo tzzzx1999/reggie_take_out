@@ -3,11 +3,40 @@ server:
 spring:
   application:
     name: reggie_take_out
-  datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
-      password: hsp
+  #  datasource:
+  #      driver-class-name: com.mysql.cj.jdbc.Driver
+  #      url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+  #      username: root
+  #      username: root
+  shardingsphere:
+    datasource:
+      names: master,slave
+      #主数据源
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.0.108:3306/itcast?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: hsp
+      slave:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://192.168.200.230:3306/itcast?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: hsp
+    masterslave:
+      load-balance-algorithm-type: round_robin #轮询
+      #最终数据源名称
+      name: datasource
+      master-data-source-name: master
+      slave-data-source-names: slave
+    #开启sql显示
+    props:
+      sql:
+        show: true
+  main:
+    allow-bean-definition-overriding: true
+
   mvc:
     hiddenmethod:
       filter:
@@ -19,7 +48,7 @@ spring:
     database: 0
   cache:
     redis:
-#      设置时间有效期
+      #      设置时间有效期
       time-to-live: 1800000
 
 mybatis-plus:
